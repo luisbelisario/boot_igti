@@ -1,17 +1,16 @@
-function fetchJson(url) {
-    return fetch(url).then((r) => {
-        return r.json();
-    })
-}
+import {listEmployees, listRoles} from './http.js';
 
-function renderTable(employees, roles) {
+let employees = []
+let roles = []
+
+function renderTable() {
     let rows = employees.map(employee => {
         let role = roles.find(role => role.id == employee.role_id)
         return `<tr><td>${employee.id}</td><td>${employee.name}</td><td>${role.name}</td></tr>`
     })
     return `<table>${rows.join("")}</table>`
 }
-
+/*
 // indicado para promises sequenciais ou seja quando a segunda depende da primeira
 function solution1() {
     fetchJson("http://localhost:3000/employees").then((employees => {
@@ -22,6 +21,7 @@ function solution1() {
 }
 
 // indicado para promises não sequenciais
+
 function solution2() {
     let empPromise = fetchJson("http://localhost:3000/employees");
     let rolesPromise = fetchJson("http://localhost:3000/roles");
@@ -30,6 +30,7 @@ function solution2() {
         document.getElementById("app").innerHTML = renderTable(employees, roles);
     })
 }
+
 
 //solution2();
 
@@ -46,12 +47,11 @@ async function teste() {
 }
 
 //solution3();
+*/
 
 async function solution4() {
-    let empPromise = fetchJson("http://localhost:3000/employees");
-    let rolesPromise = fetchJson("http://localhost:3000/roles");
-    let [employees, roles] = await Promise.all([empPromise, rolesPromise])
-    document.getElementById("app").innerHTML = renderTable(employees, roles);
+    [employees, roles] = await Promise.all([listEmployees(), listRoles()])
+    document.getElementById("app").innerHTML = renderTable();
 }
 
 solution4();
