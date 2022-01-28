@@ -3,13 +3,37 @@ import {listEmployees, listRoles} from './http.js';
 let employees = []
 let roles = []
 
-function renderTable() {
-    let rows = employees.map(employee => {
-        let role = roles.find(role => role.id == employee.role_id)
-        return `<tr><td>${employee.id}</td><td>${employee.name}</td><td>${role.name}</td></tr>`
-    })
-    return `<table>${rows.join("")}</table>`
+const listEl = document.querySelector("ul");
+const formEl = document.querySelector("form");
+
+function renderData() {
+    for (const employee of employees) {
+        let role = roles.find(role => role.id == employee.role_id);
+        const li = document.createElement("li");
+        const divName = document.createElement("div");
+        const divRole = document.createElement("div");
+        divName.textContent = employee.name;
+        divRole.textContent = role.name;
+        li.appendChild(divName);
+        li.appendChild(divRole);
+        listEl.appendChild(li);
+    }
 }
+
+function showError() {
+    document.getElementById("error").textContent = "Erro ao carregar dados";
+}
+
+async function init() {
+    try {
+        [employees, roles] = await Promise.all([listEmployees(), listRoles()])
+        renderData();
+    }
+    catch (error) {
+        showError();
+    }
+}
+
 /*
 // indicado para promises sequenciais ou seja quando a segunda depende da primeira
 function solution1() {
@@ -49,9 +73,10 @@ async function teste() {
 //solution3();
 */
 
+/*
 async function solution4() {
     [employees, roles] = await Promise.all([listEmployees(), listRoles()])
     document.getElementById("app").innerHTML = renderTable();
 }
-
-solution4();
+*/
+init();
